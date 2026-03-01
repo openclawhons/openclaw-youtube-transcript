@@ -1,0 +1,17 @@
+{
+  "id": "youtube-transcript",
+  "name": "YouTube Transcript",
+  "description": "Fetch transcripts/captions from YouTube videos. No API key required.",
+  "version": "1.0.0",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "lang": {
+        "type": "string",
+        "description": "Preferred transcript language code (e.g. 'en'). Falls back to any available language.",
+        "default": "en"
+      }
+    }
+  }
+}
