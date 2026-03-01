@@ -35,6 +35,8 @@ function formatTime(seconds) {
 module.exports = function (api) {
   const pluginConfig = api.config ?? {};
   const defaultLang = pluginConfig.lang || "en";
+  const cookiesFrom = pluginConfig.cookiesFrom || null;
+  const cookiesFile = pluginConfig.cookiesFile || null;
 
   api.registerTool({
     name: "youtube_transcript",
@@ -84,7 +86,8 @@ module.exports = function (api) {
       try {
         const { segments, lang: actualLang } = await fetchTranscript(
           videoId,
-          lang
+          lang,
+          { cookiesFrom, cookiesFile }
         );
 
         const lines = segments.map((seg) => {

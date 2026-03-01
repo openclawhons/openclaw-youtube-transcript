@@ -64,21 +64,29 @@ function runYtDlp(args, timeoutMs = 30000) {
  * @param {string} [lang='en'] - Preferred language code
  * @returns {Promise<{segments: Array<{start: number, dur: number, text: string}>, lang: string}>}
  */
-async function fetchTranscript(videoId, lang = "en") {
+async function fetchTranscript(videoId, lang = "en", opts = {}) {
   const tmpBase = join(tmpdir(), `yt-transcript-${crypto.randomBytes(6).toString("hex")}`);
   const url = `https://www.youtube.com/watch?v=${videoId}`;
 
   try {
-    // First try manual subs, then auto subs
-    await runYtDlp([
+    const args = [
       "--write-sub",
       "--write-auto-sub",
       "--sub-lang", lang,
       "--sub-format", "srv1",
       "--skip-download",
       "-o", tmpBase,
-      url,
-    ]);
+    ];
+
+    // Cookie support for YouTube bot detection bypass
+    if (opts.cookiesFrom) {
+      args.push("--cookies-from-browser", opts.cookiesFrom);
+    } else if (opts.cookiesFile) {
+      args.push("--cookies", opts.cookiesFile);
+    }
+
+    args.push(url);
+    await runYtDlp(args);
 
     // yt-dlp writes to <tmpBase>.<lang>.srv1
     const subFile = `${tmpBase}.${lang}.srv1`;

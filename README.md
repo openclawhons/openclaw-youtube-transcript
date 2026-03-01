@@ -13,9 +13,6 @@ brew install yt-dlp
 # Linux
 curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
 chmod +x /usr/local/bin/yt-dlp
-
-# Or via pip
-pip install yt-dlp
 ```
 
 ## Install
@@ -36,7 +33,48 @@ Add to your OpenClaw config under `plugins.entries`:
 }
 ```
 
-Enable the tool in your agent's tool allowlist:
+### Cookie Authentication (recommended)
+
+YouTube blocks requests from datacenter/VPS IPs. If you're running OpenClaw on a server, you'll need cookies from a browser where you're logged into YouTube.
+
+**Option A: Auto-extract from browser** (easiest — requires browser on same machine)
+
+```json
+{
+  "youtube-transcript": {
+    "lang": "en",
+    "cookiesFrom": "chrome"
+  }
+}
+```
+
+Supported browsers: `chrome`, `firefox`, `brave`, `edge`, `safari`, `opera`, `chromium`
+
+**Option B: Cookies file** (for headless servers / VPS / Docker)
+
+1. Install a browser extension like [Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
+2. Go to youtube.com while logged in
+3. Export cookies as `cookies.txt` (Netscape format)
+4. Copy the file to your OpenClaw machine
+5. Configure the path:
+
+```json
+{
+  "youtube-transcript": {
+    "lang": "en",
+    "cookiesFile": "/home/user/.openclaw/youtube-cookies.txt"
+  }
+}
+```
+
+**When do you need cookies?**
+- Running on a VPS/cloud server → **yes, almost always**
+- Running on your home machine → **probably not** (residential IPs usually work fine)
+- Getting "Sign in to confirm you're not a bot" errors → **yes**
+
+### Enable the tool
+
+Add to your agent's tool allowlist:
 
 ```json
 {
@@ -63,8 +101,10 @@ Enable the tool in your agent's tool allowlist:
 
 Accepts all URL formats: `youtube.com/watch?v=`, `youtu.be/`, `youtube.com/shorts/`, `youtube.com/embed/`, or bare video IDs.
 
-## Examples
+## Troubleshooting
 
-- "Get the transcript of this video: https://youtube.com/watch?v=..."
-- "Summarize this YouTube video" (paste URL)
-- "Pull captions from the latest county commissioners meeting on YouTube"
+**"Sign in to confirm you're not a bot"** → Add cookie auth (see above)
+
+**"yt-dlp not found"** → Install yt-dlp and make sure it's on PATH
+
+**"No subtitles found"** → The video doesn't have captions (auto-generated or manual). Most English-language videos with speech have auto-generated captions.

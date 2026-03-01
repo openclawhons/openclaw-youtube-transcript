@@ -11,6 +11,14 @@
         "type": "string",
         "description": "Preferred transcript language code (e.g. 'en'). Falls back to any available language.",
         "default": "en"
+      },
+      "cookiesFrom": {
+        "type": "string",
+        "description": "Browser to extract YouTube cookies from (e.g. 'chrome', 'firefox', 'brave', 'edge', 'safari'). Bypasses YouTube bot detection."
+      },
+      "cookiesFile": {
+        "type": "string",
+        "description": "Path to a Netscape-format cookies.txt file for YouTube authentication."
       }
     }
   }
